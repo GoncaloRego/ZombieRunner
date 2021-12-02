@@ -8,6 +8,7 @@ public class EnemyHealth : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
+        GetComponent<EnemyController>().GotShot();
         hitPoints -= damage;
 
         if (hitPoints <= 0)

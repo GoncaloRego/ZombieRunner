@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityStandardAssets.Characters.FirstPerson;
 
 public class Weapon : MonoBehaviour
 {
@@ -9,6 +10,18 @@ public class Weapon : MonoBehaviour
     [SerializeField] float shotDamage = 25f;
     [SerializeField] ParticleSystem muzzleFlash;
     [SerializeField] GameObject hitEffect;
+    [SerializeField] int zoomedFieldOfView = 15;
+    [SerializeField] int normalFieldOfView = 60;
+    [SerializeField] float zoomedSensitivity = 0.5f;
+    [SerializeField] int normalSensitivity = 2;
+    [SerializeField] Ammo ammoSlot;
+
+    RigidbodyFirstPersonController firstPersonController;
+
+    void Start()
+    {
+        firstPersonController = GetComponentInParent<RigidbodyFirstPersonController>();
+    }
 
     void Update()
     {
@@ -16,12 +29,18 @@ public class Weapon : MonoBehaviour
         {
             Shoot();
         }
+
+        Zoom();
     }
 
     void Shoot()
     {
-        PlayMuzzleFlash();
-        ProcessRaycast();
+        if (ammoSlot.GetCurrentAmmo() > 0)
+        {
+            PlayMuzzleFlash();
+            ProcessRaycast();
+            ammoSlot.ReduceCurrentAmmo();
+        }
     }
 
     void ProcessRaycast()
@@ -55,5 +74,21 @@ public class Weapon : MonoBehaviour
         GameObject damageEffect = Instantiate(hitEffect, hit.point, Quaternion.LookRotation(hit.normal));
 
         Destroy(damageEffect, 0.1f);
+    }
+
+    void Zoom()
+    {
+        if (Input.GetMouseButton(1))
+        {
+            fpsCamera.fieldOfView = zoomedFieldOfView;
+            firstPersonController.mouseLook.XSensitivity = zoomedSensitivity;
+            firstPersonController.mouseLook.YSensitivity = zoomedSensitivity;
+        }
+        else
+        {
+            fpsCamera.fieldOfView = normalFieldOfView;
+            firstPersonController.mouseLook.XSensitivity = normalSensitivity;
+            firstPersonController.mouseLook.YSensitivity = normalSensitivity;
+        }
     }
 }
