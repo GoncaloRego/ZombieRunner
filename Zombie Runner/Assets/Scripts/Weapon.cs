@@ -56,7 +56,9 @@ public class Weapon : MonoBehaviour
             }
 
             CreateHitEffect(hit);
+
             target.TakeDamage(shotDamage);
+            Debug.Log("shot");
         }
         else
         {

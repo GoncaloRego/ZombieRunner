@@ -14,15 +14,22 @@ public class EnemyController : MonoBehaviour
     NavMeshAgent navMeshAgent;
     float distanceToTarget = Mathf.Infinity;
     bool isProvoked = false;
+    EnemyHealth enemyHealth;
 
     void Start()
     {
         animator = GetComponent<Animator>();
         navMeshAgent = GetComponent<NavMeshAgent>();
+        enemyHealth = GetComponent<EnemyHealth>();
     }
 
     void Update()
     {
+        if (enemyHealth.IsDead)
+        {
+            enabled = false;
+        }
+
         distanceToTarget = Vector3.Distance(target.position, transform.position);
 
         if (isProvoked == true)
@@ -67,7 +74,7 @@ public class EnemyController : MonoBehaviour
             return;
         }
 
-        //target.GetComponent<PlayerHealth>().TakeDamage(damage);
+        target.GetComponent<PlayerHealth>().TakeDamage(damage);
         animator.SetBool("isAttacking", true);
     }
 
